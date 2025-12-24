@@ -38,8 +38,9 @@ pip install -r requirements.txt
 ```
 
 2. **Configurar conexión a la base de datos:**
+   - Copiar `config/database.py.example` a `config/database.py`
    - Editar `config/database.py` con tus credenciales de MySQL
-   - Asegúrate de que la base de datos `dbappescritorio` exista
+   - La base de datos está alojada en **Aiven Cloud** (requiere conexión a Internet)
    - Verifica que las tablas tengan la estructura correcta (ver INSTALACION.md)
 
 3. **Probar la conexión:**
@@ -56,7 +57,7 @@ Para instrucciones detalladas, consulta [INSTALACION.md](INSTALACION.md)
 
 ## Requisitos de Base de Datos
 
-La aplicación requiere una base de datos MySQL con las siguientes tablas:
+La aplicación requiere una base de datos MySQL con las siguientes tablas (ya configuradas en la nube):
 
 - `rol` - Roles de usuario
 - `usuario` - Usuarios del sistema
@@ -64,27 +65,39 @@ La aplicación requiere una base de datos MySQL con las siguientes tablas:
 - `producto` - Productos del inventario
 - `movimiento` - Registro de entradas y salidas
 
-**Importante:** Las tablas deben usar nomenclatura **snake_case** para los nombres de columnas.
+**Importante:** 
+- Las tablas deben usar nomenclatura **snake_case** para los nombres de columnas
+- La base de datos está alojada en **Aiven Cloud** (requiere conexión a Internet)
+- No se requiere MySQL instalado localmente
 
-Ver [INSTALACION.md](INSTALACION.md) para la estructura completa de las tablas.
+Ver [INSTALACION.md](INSTALACION.md) para la estructura completa de las tablas y detalles de conexión.
 
 ## Configuración
 
 ### Base de Datos
 
-Editar `config/database.py`:
+La base de datos está alojada en **Aiven Cloud**. Para configurar la conexión:
+
+1. Copiar el archivo de ejemplo:
+   ```bash
+   cp config/database.py.example config/database.py
+   ```
+
+2. Editar `config/database.py` con tus credenciales:
 
 ```python
 DB_CONFIG = {
-    'host': 'localhost',
-    'database': 'dbappescritorio',
-    'user': 'root',
-    'password': 'tu_password',
-    'port': 3306,
+    'host': 'mysql-xxx.i.aivencloud.com',  # Host de Aiven Cloud
+    'database': 'db_escritorio',
+    'user': 'avnadmin',  # Usuario de Aiven
+    'password': 'tu_password',  # Contraseña (contactar a Ernesto)
+    'port': 20259,  # Puerto personalizado de Aiven
     'charset': 'utf8mb4',
     'collation': 'utf8mb4_unicode_ci'
 }
 ```
+
+**Nota:** Para obtener las credenciales de acceso, contactar a Ernesto.
 
 ### Usuario por Defecto
 
@@ -92,10 +105,10 @@ Para iniciar sesión, necesitas crear un usuario administrador en la base de dat
 
 ```sql
 INSERT INTO usuario (nombre_usuario, email, password, id_rol) 
-VALUES ('Administrador', 'admin@inventario.com', 'admin123', 1);
+VALUES ('Administrador', 'admin@empresa.com', 'admin123', 1);
 ```
 
-- **Email:** admin@inventario.com
+- **Email:** admin@empresa.com
 - **Contraseña:** admin123
 
 ## Funcionalidades MVP
@@ -140,13 +153,19 @@ El proyecto sigue una arquitectura de 3 capas:
 ## Solución de Problemas
 
 ### Error de conexión a MySQL
-- Verificar que MySQL esté ejecutándose
+- Verificar conexión a Internet (la BD está en la nube)
 - Verificar credenciales en `config/database.py`
-- Verificar que la base de datos exista
+- Verificar que el host y puerto sean correctos
+- Verificar firewall (puerto 20259 debe estar abierto)
 
 ### Error de columnas desconocidas
 - Verificar que las tablas usen snake_case
 - Ver estructura esperada en INSTALACION.md
+
+### Error de timeout o acceso denegado
+- Verificar que las credenciales sean correctas
+- Contactar a Ernesto para obtener/verificar credenciales
+- Verificar estado del servicio en Aiven Cloud
 
 Para más detalles, consulta [INSTALACION.md](INSTALACION.md)
 
@@ -158,8 +177,14 @@ Este proyecto sigue metodología Ágil Scrum con desarrollo incremental por spri
 
 - **Python 3.8+**
 - **Flet** - Framework de interfaz gráfica
-- **MySQL** - Base de datos relacional
+- **MySQL** - Base de datos relacional (alojada en Aiven Cloud)
 - **mysql-connector-python** - Conector MySQL para Python
+
+### Infraestructura
+
+- **Base de datos:** Aiven Cloud (MySQL en la nube)
+- **Hosting:** Base de datos remota, disponible 24/7
+- **Conexión:** Requiere conexión a Internet
 
 ## Licencia
 
