@@ -1,0 +1,52 @@
+"""
+Configuración de conexión a la base de datos MySQL
+Capa de configuración - Define parámetros de conexión
+
+COPIAR ESTE ARCHIVO A database.py Y COMPLETAR CON TUS CREDENCIALES
+"""
+
+import mysql.connector
+from mysql.connector import Error
+
+# Configuración de la base de datos
+DB_CONFIG = {
+    'host': 'tu_host_aqui',  # Ejemplo: 'mysql-xxx.i.aivencloud.com' o 'localhost'
+    'database': 'db_escritorio',
+    'user': 'tu_usuario',  # Ejemplo: 'avnadmin' o 'root'
+    'password': 'tu_password',  # Tu contraseña aquí
+    'port': 3306,  # Puerto de MySQL (3306 por defecto, o el que uses)
+    'charset': 'utf8mb4',
+    'collation': 'utf8mb4_unicode_ci'
+}
+
+
+def get_connection():
+    """
+    Establece y retorna una conexión a la base de datos MySQL
+    
+    Returns:
+        mysql.connector.connection: Objeto de conexión o None si hay error
+    """
+    try:
+        connection = mysql.connector.connect(**DB_CONFIG)
+        if connection.is_connected():
+            return connection
+    except Error as e:
+        print(f"Error al conectar a MySQL: {e}")
+        return None
+
+
+def test_connection():
+    """
+    Prueba la conexión a la base de datos
+    
+    Returns:
+        bool: True si la conexión es exitosa, False en caso contrario
+    """
+    connection = get_connection()
+    if connection:
+        connection.close()
+        print("Conexión a MySQL exitosa")
+        return True
+    return False
+
